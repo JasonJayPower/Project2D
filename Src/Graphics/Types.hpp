@@ -5,11 +5,14 @@
 #include <memory>
 
 namespace Graphics {
-	struct Deleter {
-		void operator()(GLFWwindow* window) const {
-			if (window) { glfwDestroyWindow(window); }
-		}
-	};
-}
+    struct Deleter {
+        void operator()(GLFWwindow* window) const
+        {
+            if (window) {
+                glfwDestroyWindow(window);
+            }
+        }
+    };
+}  // namespace Graphics
 
 using Window = std::unique_ptr<GLFWwindow, Graphics::Deleter>;

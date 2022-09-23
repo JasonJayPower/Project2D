@@ -5,28 +5,28 @@
 
 #include <queue>
 
-#include "Input/Types.hpp"
 #include "Graphics/Types.hpp"
+#include "Input/Types.hpp"
 #include "Utils/Types.hpp"
 
 class ContextWindow
-{
-	using EventQueue = std::queue<IEvent>;
+{    
+    using EventQueue = std::queue<IEvent>;
 
-public:
-	ContextWindow(const c8* title, s32 w, s32 h);
+  public:
+    ContextWindow(const c8* title, s32 w, s32 h);
 
-	bool isOpen() const;
-	void close()  const;
-	void update() const;
+    bool isOpen() const;
+    void close() const;
+    void update() const;
 
-	bool pollEvent(IEvent& e);
+    bool pollEvent(IEvent& e);
 
-private:
-	void initialiseCallbacks();
+  private:
+    void initialiseCallbacks();
 
-	Window createContextWindow(const c8* title, s32 w, s32 h);
+    Window createContextWindow(const c8* title, s32 w, s32 h);
 
-	EventQueue m_events;
-	Window m_window;
+    EventQueue m_events;
+    Window m_window;
 };
