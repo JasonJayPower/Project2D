@@ -10,7 +10,7 @@
 #include "Utils/Types.hpp"
 
 class ContextWindow
-{    
+{
     using EventQueue = std::queue<IEvent>;
 
   public:
