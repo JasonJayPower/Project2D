@@ -10,7 +10,7 @@ struct Mat4x4 {
 using Mat4x4F = Mat4x4<f32>;
 
 namespace Math {
-    inline constexpr Mat4x4F createOrthoView(f32 l, f32 r, f32 t, f32 b, f32 n = -1.f, f32 f = 1.f)
+    inline constexpr Mat4x4F createOrthoView(f32 l, f32 r, f32 t, f32 b, f32 n = 1.f, f32 f = -1.f)
     {
         return Mat4x4F{ 2.f / (r - l), 0.f,           0.f,          -((r + l) / (r - l)),
                         0.f,           2.f / (t - b), 0.f,          -((t + b) / (t - b)),

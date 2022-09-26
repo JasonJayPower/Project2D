@@ -12,12 +12,14 @@ class Texture : public NonCopyable
     void bind() const;
     void unbind() const;
 
-    Vec2U getSize() const;
+    Vec2S getSize() const;
 
     bool create1x1();
+    bool loadFromFile(const char* filepath);
 
   private:
     u32 m_handle = 0;
-    u32 m_width  = 0;
-    u32 m_height = 0;
+    s32 m_width  = 0;
+    s32 m_height = 0;
+    s32 m_comp   = 0;
 };
