@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include "Graphics/ContextWindow.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Texture.hpp"
@@ -13,7 +11,7 @@ s32 main(s32 argc, const s8* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     ContextWindow window("My Title", 640, 480);
-    Renderer r;
+    Renderer r(&window);
 
     Texture t;
     Texture t1;
@@ -25,10 +23,10 @@ s32 main(s32 argc, const s8* argv[])
         while (window.pollEvent(e)) {
             switch (e.type) {
                 case IEventType::KeyPressed: {
-                    std::cout << "Key " << e.keyboard.key << " pressed" << std::endl;
+                    printf("Key %d pressed\n", e.keyboard.key);
                 } break;
                 case IEventType::KeyReleased: {
-                    std::cout << "Key " << e.keyboard.key << " released" << std::endl;
+                    printf("Key %d released\n", e.keyboard.key);
                 } break;
             }
         }

@@ -7,6 +7,7 @@
 
 #include "Graphics/Types.hpp"
 #include "Input/Types.hpp"
+#include "Math/Vec2.hpp"
 #include "Utils/Types.hpp"
 
 class ContextWindow
@@ -16,6 +17,7 @@ class ContextWindow
   public:
     ContextWindow(const c8* title, s32 w, s32 h);
 
+    Vec2S getSize() const;
     bool isOpen() const;
     void close() const;
     void update() const;

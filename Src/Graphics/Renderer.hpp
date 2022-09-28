@@ -9,22 +9,23 @@
 #include "Math/Mat4x4.hpp"
 #include "Math/Vec2.hpp"
 
+class ContextWindow;
 class Texture;
-class Renderer
+class Renderer : NonCopyable
 {
     using Vertices = std::vector<Vertex>;
     using Textures = std::vector<const Texture*>;
 
   public:
-    Renderer();
+    Renderer(const ContextWindow* cWindow, u32 m_numSpritesPerBatch = 64);
+
+    void resetView();
 
     void begin();
     void draw(RectF dst, RectF src, const Texture* texture);
     void end();
 
   private:
-    static constexpr u32 MaxSprites = 1000;
-
     struct TextureSlots {
         s32 currSlot;
         s32 prevSlot;
@@ -35,11 +36,13 @@ class Renderer
     void flushBatch();
     void drawBatch();
 
-    void createShader(Vec2F windowSize);
+    void createShader();
 
-    u32 m_spriteCount;
+    u32          m_spriteCount;
+    u32          m_batchSize;
+    Vec2S        m_windowSize;
     RenderBuffer m_renderBuffer;
     TextureSlots m_textureSlots;
-    Vertices m_vertices;
-    Shader m_shader;
+    Vertices     m_vertices;
+    Shader       m_shader;
 };

@@ -1,18 +1,28 @@
 #include "Graphics/Renderer.hpp"
 
+#include "Graphics/Consts.hpp"
 #include "Graphics/ContextWindow.hpp"
 #include "Graphics/Texture.hpp"
 #include "Utils/GLHelpers.hpp"
 
-Renderer::Renderer()
+Renderer::Renderer(const ContextWindow* cWindow, u32 numSpritesPerBatch)
     : m_spriteCount { 0 }
-    , m_renderBuffer{ 32 }
-    , m_vertices    { Vertices(32) }
+    , m_batchSize   { numSpritesPerBatch }
+    , m_windowSize  { cWindow->getSize() }
+    , m_renderBuffer{ numSpritesPerBatch }
+    , m_vertices    { Vertices(numSpritesPerBatch) }
     , m_textureSlots{ 0, 0, Textures(GLHelpers::getMaxTextureUnits()) }
 {
-    createShader(Vec2F{ 640.f, 480.f });
+    createShader();
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void Renderer::resetView()
+{
+    m_shader.setUniformMatrix4fv(
+        Graphics::ProjViewUniform,
+        Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
 }
 
 void Renderer::begin()
@@ -22,7 +32,7 @@ void Renderer::begin()
 void Renderer::draw(RectF dst, RectF src, const Texture* texture)
 {
     const u32 texSlot = getTextureSlot(texture);
-    if (m_spriteCount >= 128) {
+    if (m_spriteCount >= m_batchSize) {
         flushBatch();
     }
 
@@ -49,7 +59,7 @@ s32 Renderer::getTextureSlot(const Texture* tex)
             texSlot = m_textureSlots.prevSlot = m_textureSlots.currSlot++;
             m_textureSlots.slot[texSlot]      = tex;
             tex->bind(texSlot);
-            m_shader.setCustomUniform1iv("image", texSlot);
+            m_shader.setCustomUniform1iv(Graphics::TextureUniform, texSlot);
         }
     }
     return texSlot;
@@ -67,38 +77,9 @@ void Renderer::drawBatch()
     glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_spriteCount);
 }
 
-void Renderer::createShader(Vec2F windowSize)
+void Renderer::createShader()
 {
-    static constexpr c8* vsData = R"(
-        #version 330 core
-        layout (location = 0) in vec2 vOffset;
-        layout (location = 1) in vec4 vDst;
-        layout (location = 2) in vec4 vSrc;
-        layout (location = 3) in uint vTid;
-        uniform mat4 vproj;
-             out vec2 fOffset;
-             out vec4 fSrc;
-        flat out uint fTid;
-        void main() {
-            fOffset = vOffset;
-            fSrc = vSrc;
-            fTid = vTid;
-            gl_Position = vproj * vec4((vOffset * vDst.zw) + vDst.xy, 0.f, 1.f); 
-        }  
-    )";
-
-    static constexpr c8* fsData = R"(
-        #version 330 core
-        in vec2 fOffset;
-             in vec4 fSrc;
-        flat in uint fTid;
-        out vec4 Color;
-        uniform sampler2D image[5];
-        void main() { 
-            Color = texelFetch(image[fTid], ivec2((fOffset * fSrc.zw) + fSrc.xy), 0);
-        };
-    )";
-
-    m_shader.create(vsData, fsData);
-    m_shader.setUniformMatrix4fv("vproj", Math::createOrthoView(0.f, 640.f, 0.f, 480.f));
+    m_shader.create(Graphics::VSData, Graphics::FSData);
+    m_shader.setUniformMatrix4fv(Graphics::ProjViewUniform,
+        Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
 }

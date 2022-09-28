@@ -3,7 +3,7 @@
 #include "Math/Rect.hpp"
 
 struct Vertex {
-    RectF dst;
-    RectF src;
-    u32   tid;
+    RectF dst = { 0.f, 0.f, 0.f, 0.f };
+    RectF src = { 0.f, 0.f, 0.f, 0.f };
+    u32   tid = 0;
 };

@@ -6,6 +6,13 @@ ContextWindow::ContextWindow(const c8* title, s32 w, s32 h)
     initialiseCallbacks();
 }
 
+Vec2S ContextWindow::getSize() const
+{
+    Vec2S size;
+    glfwGetWindowSize(m_window.get(), &size.x, &size.y);
+    return size;
+}
+
 bool ContextWindow::isOpen() const
 {
     return !glfwWindowShouldClose(m_window.get());
