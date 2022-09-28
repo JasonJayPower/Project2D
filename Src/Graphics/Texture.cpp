@@ -9,9 +9,9 @@ Texture::~Texture()
     glDeleteTextures(1, &m_handle);
 }
 
-void Texture::bind() const
+void Texture::bind(u32 slot) const
 {
-    glActiveTexture(GL_TEXTURE0);
+    glActiveTexture(GL_TEXTURE0 + slot);
     glBindTexture(GL_TEXTURE_2D, m_handle);
 }
 

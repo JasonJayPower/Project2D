@@ -1,4 +1,4 @@
-#include "Shader.hpp"
+#include "Graphics/Shader.hpp"
 
 Shader::~Shader()
 {
@@ -36,7 +36,13 @@ void Shader::create(const c8* vsData, const c8* fsData)
     glUseProgram(m_handle);
 }
 
-void Shader::setMat4x4F(const c8* name, const Mat4x4F& mat4x4) const
+void Shader::setCustomUniform1iv(const c8* name, s32 data) const
+{
+    // (REVISIT) Sets the value of a specific index for a uniform array.
+    glUniform1iv(glGetUniformLocation(m_handle, name) + data, 1, &data);
+}
+
+void Shader::setUniformMatrix4fv(const c8* name, const Mat4x4F& mat4x4) const
 {
     u32 location = glGetUniformLocation(m_handle, name);
     glUniformMatrix4fv(location, 1, true, &mat4x4.m[0]);

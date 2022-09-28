@@ -4,6 +4,7 @@
 
 template <class T>
 struct Vec2 {
+    constexpr Vec2() = default;
     constexpr Vec2(T vx, T vy)
         : x{ vx }
         , y{ vy }

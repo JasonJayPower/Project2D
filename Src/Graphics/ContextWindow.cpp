@@ -38,7 +38,7 @@ Window ContextWindow::createContextWindow(const c8* title, s32 w, s32 h)
     window.reset(glfwCreateWindow(w, h, title, nullptr, nullptr));
     if (window) {
         glfwMakeContextCurrent(window.get());
-        gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+        gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
         glfwSwapInterval(GL_TRUE);
     }
     return window;

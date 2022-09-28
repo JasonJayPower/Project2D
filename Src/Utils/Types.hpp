@@ -14,8 +14,7 @@ using c8  = char;
 using f32 = float;
 using f64 = double;
 
-struct NonCopyable
-{
+struct NonCopyable {
     NonCopyable()                              = default;
     NonCopyable(const NonCopyable&)            = delete;
     NonCopyable& operator=(const NonCopyable&) = delete;

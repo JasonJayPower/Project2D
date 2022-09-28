@@ -16,7 +16,8 @@ class Shader : public NonCopyable
 
     void create(const c8* vertexData, const c8* fragmentData);
 
-    void setMat4x4F(const c8* name, const Mat4x4F& mat4x4) const;
+    void setCustomUniform1iv(const c8* name, s32 data) const;
+    void setUniformMatrix4fv(const c8* name, const Mat4x4F& mat4x4) const;
 
   private:
     u32 m_handle = 0;

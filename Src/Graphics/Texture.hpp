@@ -9,7 +9,7 @@ class Texture : public NonCopyable
     Texture() = default;
     ~Texture();
 
-    void bind() const;
+    void bind(u32 slot) const;
     void unbind() const;
 
     Vec2S getSize() const;
