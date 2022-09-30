@@ -5,17 +5,17 @@
 
 #include <queue>
 
-#include "Graphics/Types.hpp"
 #include "Input/Types.hpp"
 #include "Math/Vec2.hpp"
 #include "Utils/Types.hpp"
 
-class ContextWindow
+class ContextWindow : public NonCopyable
 {
     using EventQueue = std::queue<IEvent>;
 
   public:
     ContextWindow(const c8* title, s32 w, s32 h);
+    ~ContextWindow();
 
     Vec2S getSize() const;
     bool isOpen() const;
@@ -27,8 +27,8 @@ class ContextWindow
   private:
     void initialiseCallbacks();
 
-    Window createContextWindow(const c8* title, s32 w, s32 h);
+    GLFWwindow* createContextWindow(const c8* title, s32 w, s32 h);
 
     EventQueue m_events;
-    Window m_window;
+    GLFWwindow* m_window;
 };

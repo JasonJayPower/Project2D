@@ -3,6 +3,8 @@
 #include "Utils/Types.hpp"
 
 namespace Input {
+    enum class State { None, Press, Hold, Release };
+
     enum class EventType {
         None = 0,
         KeyPressed,
@@ -43,6 +45,6 @@ namespace Input {
         };
     };
 }  // namespace Input
-
+using IState     = Input::State;
 using IEvent     = Input::Event;
 using IEventType = Input::EventType;

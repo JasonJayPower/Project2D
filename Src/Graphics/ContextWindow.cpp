@@ -6,21 +6,26 @@ ContextWindow::ContextWindow(const c8* title, s32 w, s32 h)
     initialiseCallbacks();
 }
 
+ContextWindow::~ContextWindow()
+{
+    glfwDestroyWindow(m_window);
+}
+
 Vec2S ContextWindow::getSize() const
 {
     Vec2S size;
-    glfwGetWindowSize(m_window.get(), &size.x, &size.y);
+    glfwGetWindowSize(m_window, &size.x, &size.y);
     return size;
 }
 
 bool ContextWindow::isOpen() const
 {
-    return !glfwWindowShouldClose(m_window.get());
+    return !glfwWindowShouldClose(m_window);
 }
 
 void ContextWindow::close() const
 {
-    glfwSetWindowShouldClose(m_window.get(), GLFW_TRUE);
+    glfwSetWindowShouldClose(m_window, GLFW_TRUE);
 }
 
 bool ContextWindow::pollEvent(IEvent& e)
@@ -35,27 +40,26 @@ bool ContextWindow::pollEvent(IEvent& e)
 
 void ContextWindow::update() const
 {
-    glfwSwapBuffers(m_window.get());
+    glfwSwapBuffers(m_window);
     glfwPollEvents();
 }
 
-Window ContextWindow::createContextWindow(const c8* title, s32 w, s32 h)
+GLFWwindow* ContextWindow::createContextWindow(const c8* title, s32 w, s32 h)
 {
-    Window window = nullptr;
-    window.reset(glfwCreateWindow(w, h, title, nullptr, nullptr));
+    GLFWwindow* window = nullptr;
+    window             = glfwCreateWindow(w, h, title, nullptr, nullptr);
     if (window) {
-        glfwMakeContextCurrent(window.get());
+        glfwMakeContextCurrent(window);
         gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
-        glfwSwapInterval(GL_TRUE);
     }
     return window;
 }
 
 void ContextWindow::initialiseCallbacks()
 {
-    glfwSetWindowUserPointer(m_window.get(), &m_events);
+    glfwSetWindowUserPointer(m_window, &m_events);
 
-    glfwSetKeyCallback(m_window.get(), [](GLFWwindow* window, s32 key, s32 scancode, s32 action, s32 mods) {
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, s32 key, s32 scancode, s32 action, s32 mods) {
         EventQueue* events = static_cast<EventQueue*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {

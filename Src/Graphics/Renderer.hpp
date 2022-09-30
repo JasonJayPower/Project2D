@@ -4,7 +4,6 @@
 
 #include "Graphics/RenderBuffer.hpp"
 #include "Graphics/Shader.hpp"
-#include "Graphics/Types.hpp"
 #include "Graphics/Vertex.hpp"
 #include "Math/Mat4x4.hpp"
 #include "Math/Vec2.hpp"

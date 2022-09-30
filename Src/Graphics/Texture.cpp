@@ -1,8 +1,7 @@
 #include "Graphics/Texture.hpp"
 
 #include <GLAD/glad.h>
-
-#include "Graphics/Types.hpp"
+#include <STB/stb_image.h>
 
 Texture::~Texture()
 {
@@ -46,7 +45,7 @@ bool Texture::create1x1()
 
 bool Texture::loadFromFile(const char* filepath)
 {
-    PixelData pixelData{ stbi_load(filepath, &m_width, &m_height, &m_comp, 0) };
+    u8* pixelData{ stbi_load(filepath, &m_width, &m_height, &m_comp, 0) };
     if (pixelData) {
         glGenTextures(1, &m_handle);
         glBindTexture(GL_TEXTURE_2D, m_handle);
@@ -57,13 +56,13 @@ bool Texture::loadFromFile(const char* filepath)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         switch (m_comp) {
             case STBI_rgb_alpha: {
-                glTexImage2D(
-                    GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelData.get());
+                glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_width, m_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelData);
             } break;
             default: {
                 printf("Bit-Depth of .png not supported, supporting only 32-bit.\n");
             }
         }
+        stbi_image_free(pixelData);
     }
     return true;
 }

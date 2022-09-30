@@ -3,6 +3,7 @@
 #include "Utils/Types.hpp"
 
 namespace Graphics {
+
     inline constexpr c8* ProjViewUniform = "projView";
     inline constexpr c8* TextureUniform  = "tex";
 
