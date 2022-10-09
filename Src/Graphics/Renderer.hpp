@@ -16,7 +16,7 @@ class Renderer : NonCopyable
     using Textures = std::vector<const Texture*>;
 
   public:
-    Renderer(const ContextWindow* cWindow, u32 m_numSpritesPerBatch = 64);
+    explicit Renderer(const ContextWindow* cWindow, s32 m_numSpritesPerBatch = 64);
 
     void resetView();
 
@@ -37,11 +37,11 @@ class Renderer : NonCopyable
 
     void createShader();
 
-    u32          m_spriteCount;
-    u32          m_batchSize;
-    Vec2S        m_windowSize;
+    s32 m_spriteCount;
+    s32 m_batchSize;
+    Vec2S m_windowSize;
     RenderBuffer m_renderBuffer;
     TextureSlots m_textureSlots;
-    Vertices     m_vertices;
-    Shader       m_shader;
+    Vertices m_vertices;
+    Shader m_shader;
 };

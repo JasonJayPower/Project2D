@@ -16,5 +16,5 @@ namespace Math {
                         0.f,           2.f / (t - b), 0.f,          -((t + b) / (t - b)),
                         0.f,           0.f,           -2 / (f - n), -((f + n) / (f - n)),
                         0.f,           0.f,           0.f,          1.f };
-    };
+    }
 }  // namespace Math

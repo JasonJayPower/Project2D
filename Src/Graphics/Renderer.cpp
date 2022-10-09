@@ -5,7 +5,7 @@
 #include "Graphics/Texture.hpp"
 #include "Utils/GLHelpers.hpp"
 
-Renderer::Renderer(const ContextWindow* cWindow, u32 numSpritesPerBatch)
+Renderer::Renderer(const ContextWindow* cWindow, s32 numSpritesPerBatch)
     : m_spriteCount { 0 }
     , m_batchSize   { numSpritesPerBatch }
     , m_windowSize  { cWindow->getSize() }

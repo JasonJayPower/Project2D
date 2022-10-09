@@ -16,20 +16,20 @@ class Time
 
     constexpr f64 asSeconds() const noexcept
     {
-        return static_cast<f64>(m_time / 1000000000.0);
+        return (static_cast<f64>(m_time) / 1000000000.0);
     }
 
-    constexpr s32 asMilliSeconds() const noexcept
+    constexpr u32 asMilliSeconds() const noexcept
     {
-        return static_cast<s32>(m_time / 1000000);
+        return static_cast<u32>(m_time / 1000000);
     }
 
-    constexpr s64 asMicroSeconds() const noexcept
+    constexpr u64 asMicroSeconds() const noexcept
     {
-        return static_cast<s64>(m_time / 1000);
+        return static_cast<u64>(m_time / 1000);
     }
 
-    constexpr s64 asNanoSeconds() const noexcept
+    constexpr u64 asNanoSeconds() const noexcept
     {
         return m_time;
     }
@@ -40,7 +40,7 @@ class Time
 
 constexpr Time seconds(f64 time)
 {
-    return Time(static_cast<u64>(time * 1000000000));
+    return { static_cast<u64>(time * 1000000000) };
 }
 
 constexpr Time operator+(Time left, Time right)

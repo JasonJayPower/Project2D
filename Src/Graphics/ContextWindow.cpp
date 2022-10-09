@@ -25,13 +25,13 @@ bool ContextWindow::isOpen() const
 
 void ContextWindow::close() const
 {
-    glfwSetWindowShouldClose(m_window, GLFW_TRUE);
+    glfwSetWindowShouldClose(m_window, true);
 }
 
 bool ContextWindow::pollEvent(IEvent& e)
 {
     if (!m_events.empty()) {
-        e = std::move(m_events.front());
+        e = m_events.front();
         m_events.pop();
         return true;
     }
@@ -46,8 +46,7 @@ void ContextWindow::update() const
 
 GLFWwindow* ContextWindow::createContextWindow(const c8* title, s32 w, s32 h)
 {
-    GLFWwindow* window = nullptr;
-    window             = glfwCreateWindow(w, h, title, nullptr, nullptr);
+    GLFWwindow* window = glfwCreateWindow(w, h, title, nullptr, nullptr);
     if (window) {
         glfwMakeContextCurrent(window);
         gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress));
@@ -60,7 +59,7 @@ void ContextWindow::initialiseCallbacks()
     glfwSetWindowUserPointer(m_window, &m_events);
 
     glfwSetKeyCallback(m_window, [](GLFWwindow* window, s32 key, s32 scancode, s32 action, s32 mods) {
-        EventQueue* events = static_cast<EventQueue*>(glfwGetWindowUserPointer(window));
+        auto events = static_cast<IEventQueue*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {
                 events->emplace(IEvent{ IEventType::KeyPressed, key, mods });
@@ -68,6 +67,25 @@ void ContextWindow::initialiseCallbacks()
             case GLFW_RELEASE: {
                 events->emplace(IEvent{ IEventType::KeyReleased, key, mods });
             } break;
+            default: break;
+        }
+    });
+
+    glfwSetCursorPosCallback(m_window, [](GLFWwindow* window, f64 xPos, f64 yPos) {
+        auto events = static_cast<IEventQueue*>(glfwGetWindowUserPointer(window));
+        events->emplace(IEvent{ IEventType::MouseMoved, { static_cast<s32>(xPos), static_cast<s32>(yPos) } });
+    });
+
+    glfwSetMouseButtonCallback(m_window, [](GLFWwindow* window, s32 button, s32 action, s32 mods) {
+        auto events = static_cast<IEventQueue*>(glfwGetWindowUserPointer(window));
+        switch (action) {
+            case GLFW_PRESS: {
+                events->emplace(IEvent{ IEventType::MouseButtonPressed, button, mods });
+            } break;
+            case GLFW_RELEASE: {
+                events->emplace(IEvent{ IEventType::MouseButtonReleased, button, mods });
+            } break;
+            default: break;
         }
     });
 }

@@ -2,7 +2,7 @@
 
 #include <vector>
 
-RenderBuffer::RenderBuffer(const u32 maxSprites)
+RenderBuffer::RenderBuffer(s32 maxSprites)
     : m_vao{ 0 }
     , m_vbo{ 0 }
     , m_ibo{ 0 }
@@ -22,10 +22,10 @@ RenderBuffer::~RenderBuffer()
     glDeleteVertexArrays(1, &m_vao);
 }
 
-void RenderBuffer::update(const Vertex* data, s32 count)
+void RenderBuffer::update(const Vertex* data, s32 count) const
 {
     glBindBuffer(GL_ARRAY_BUFFER, m_sbo);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, count * sizeof(Vertex), data);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, static_cast<s64>(count * sizeof(Vertex)), data);
 }
 
 void RenderBuffer::createVertexArray()
@@ -41,9 +41,9 @@ void RenderBuffer::createVertexArray()
 
     glBindBuffer(GL_ARRAY_BUFFER, m_sbo);
 
-    glVertexAttribPointer( 1, 4,  GL_FLOAT,        GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, dst)));
-    glVertexAttribPointer( 2, 4,  GL_FLOAT,        GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, src)));
-    glVertexAttribIPointer(3, 1,  GL_UNSIGNED_INT,           sizeof(Vertex), (void*)(offsetof(Vertex, tid)));
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, dst)));
+    glVertexAttribPointer(2, 4, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)(offsetof(Vertex, src)));
+    glVertexAttribIPointer(3, 1, GL_UNSIGNED_INT, sizeof(Vertex), (void*)(offsetof(Vertex, tid)));
 
     glEnableVertexAttribArray(1);  // Destination
     glEnableVertexAttribArray(2);  // Texture Source
@@ -74,5 +74,5 @@ void RenderBuffer::createSpriteBuffer(const u32 maxSprites)
 {
     glGenBuffers(1, &m_sbo);
     glBindBuffer(GL_ARRAY_BUFFER, m_sbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(Vertex) * maxSprites, nullptr, GL_DYNAMIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<s64>(maxSprites * sizeof(Vertex)), nullptr, GL_DYNAMIC_DRAW);
 }

@@ -44,6 +44,5 @@ void Shader::setCustomUniform1iv(const c8* name, s32 data) const
 
 void Shader::setUniformMatrix4fv(const c8* name, const Mat4x4F& mat4x4) const
 {
-    u32 location = glGetUniformLocation(m_handle, name);
-    glUniformMatrix4fv(location, 1, true, &mat4x4.m[0]);
+    glUniformMatrix4fv(glGetUniformLocation(m_handle, name), 1, true, &mat4x4.m[0]);
 }

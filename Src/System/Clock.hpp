@@ -16,7 +16,7 @@ class Clock
   public:
     Clock() = default;
 
-    Time Clock::elapsed() const noexcept
+    Time elapsed() const noexcept
     {
         return (ClockType::now() - m_start).count();
     }

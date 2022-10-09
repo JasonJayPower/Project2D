@@ -7,15 +7,15 @@
 class RenderBuffer
 {
   public:
-    RenderBuffer(const u32 maxSprites);
+    RenderBuffer(s32 maxSprites);
     ~RenderBuffer();
 
-    void update(const Vertex* data, s32 count);
+    void update(const Vertex* data, s32 count) const;
 
   private:
     void createVertexBuffer();
     void createIndexBuffer();
-    void createSpriteBuffer(const u32 maxSprites);
+    void createSpriteBuffer(u32 maxSprites);
     void createVertexArray();
 
     u32 m_vao = 0;  // Vertex Array  Obj

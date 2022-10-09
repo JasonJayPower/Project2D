@@ -1,6 +1,6 @@
 #pragma once
 
-#include <glad/glad.h>
+#include <GLAD/glad.h>
 
 #include "Math/Mat4x4.hpp"
 #include "Math/Vec2.hpp"

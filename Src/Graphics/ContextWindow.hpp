@@ -11,8 +11,6 @@
 
 class ContextWindow : public NonCopyable
 {
-    using EventQueue = std::queue<IEvent>;
-
   public:
     ContextWindow(const c8* title, s32 w, s32 h);
     ~ContextWindow();
@@ -29,6 +27,6 @@ class ContextWindow : public NonCopyable
 
     GLFWwindow* createContextWindow(const c8* title, s32 w, s32 h);
 
-    EventQueue m_events;
+    IEventQueue m_events;
     GLFWwindow* m_window;
 };

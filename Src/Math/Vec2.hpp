@@ -12,7 +12,7 @@ struct Vec2 {
     }
 
     template <typename U>
-    constexpr Vec2(const Vec2<U>& v)
+    constexpr explicit Vec2(const Vec2<U>& v)
         : x{ static_cast<T>(v.x) }
         , y{ static_cast<T>(v.y) }
     {

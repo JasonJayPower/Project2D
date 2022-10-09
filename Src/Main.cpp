@@ -1,11 +1,26 @@
 #include "Graphics/ContextWindow.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Texture.hpp"
-#include "Input/Keyboard.hpp"
 #include "Input/Types.hpp"
 #include "System/Clock.hpp"
 
-s32 main(s32 argc, const s8* argv[])
+#include "Input/EventHandler.hpp"
+
+struct X {
+    void mouseMove(IEventData data) {
+        printf("Mouse moved %d, %d \n", data.mousePos.x, data.mousePos.y);
+    }
+    void btnA(IEventData data) {
+        printf("BtnA Pressed %d, %d \n", data.keyboard.key, data.keyboard.mod);
+    }
+    void btnB(IEventData data) {
+        printf("BtnB Pressed %d, %d \n", data.mouse.btn, data.mouse.mod);
+    }
+};
+
+
+
+s32 main(s32 argc, const char* argv[])
 {
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -13,37 +28,25 @@ s32 main(s32 argc, const s8* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     ContextWindow window("My Title", 640, 480);
-    Renderer r(&window, 100000);
+    Renderer r(&window, 1000);
 
     Texture t;
     Texture t1;
     t.loadFromFile("Assets/Texture/minotaur.png");
     t1.loadFromFile("Assets/Texture/minotaur2.png");
 
-    Keyboard kb;
+    EventHandler eh;
+    X x;
+    using Callback = Delegate<void(IEventData)>;
+    eh.addCallback(IEventAction::MousePos, Callback::bind<&X::mouseMove>(&x));
+    eh.addCallback(IEventAction::BtnA,  Callback::bind<&X::btnA>(&x));
+    eh.addCallback(IEventAction::BtnB,  Callback::bind<&X::btnB>(&x));
 
     while (window.isOpen()) {
         IEvent e{};
+        // Move to Context Window ?
         while (window.pollEvent(e)) {
-            switch (e.type) {
-                case IEventType::KeyPressed:
-                case IEventType::KeyReleased: {
-                    kb.setKey(e.keyboard.key);
-                } break;
-            }
-        }
-
-        if (kb.checkKeyAndState(GLFW_KEY_ESCAPE, IState::Press)) {
-            window.close();
-        }
-        if (kb.checkKeyAndState(GLFW_KEY_A, IState::Press)) {
-            printf("Key A has been pressed\n");
-        }
-        if (kb.checkKeyAndState(GLFW_KEY_S, IState::Release)) {
-            printf("Key S has been released\n");
-        }
-        if (kb.checkKeyAndState(GLFW_KEY_D, IState::Hold)) {
-            printf("Key D is held\n");
+            eh.handleEvent(e);
         }
 
         glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
@@ -56,7 +59,6 @@ s32 main(s32 argc, const s8* argv[])
         r.end();
 
         window.update();
-        kb.update();
     }
     glfwTerminate();
 
