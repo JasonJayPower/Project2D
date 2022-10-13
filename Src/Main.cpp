@@ -1,24 +1,28 @@
+#include "Graphics/Camera.hpp"
 #include "Graphics/ContextWindow.hpp"
 #include "Graphics/Renderer.hpp"
 #include "Graphics/Texture.hpp"
-#include "Input/Types.hpp"
-#include "System/Clock.hpp"
-
 #include "Input/EventHandler.hpp"
+#include "Input/Types.hpp"
 
-struct X {
-    void mouseMove(IEventData data) {
-        printf("Mouse moved %d, %d \n", data.mousePos.x, data.mousePos.y);
+struct Sprite {
+    void update()
+    {
+        dst.x += dir.x * spd;
+        dst.y += dir.y * spd;
     }
-    void btnA(IEventData data) {
-        printf("BtnA Pressed %d, %d \n", data.keyboard.key, data.keyboard.mod);
-    }
-    void btnB(IEventData data) {
-        printf("BtnB Pressed %d, %d \n", data.mouse.btn, data.mouse.mod);
-    }
+
+    s32 spd   = 2;
+    Vec2F dir = { 0, 0 };
+    RectF dst = { 0, 0, 71, 65 };
+    RectF src = { 0, 0, 71, 65 };
+    const Texture* tex;
+
+    void up(IEventData data)    { dir = {  0, -1 }; }
+    void down(IEventData data)  { dir = {  0,  1 }; }
+    void left(IEventData data)  { dir = { -1,  0 }; }
+    void right(IEventData data) { dir = {  1,  0 }; }
 };
-
-
 
 s32 main(s32 argc, const char* argv[])
 {
@@ -28,34 +32,38 @@ s32 main(s32 argc, const char* argv[])
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
     ContextWindow window("My Title", 640, 480);
-    Renderer r(&window, 1000);
+
+    Renderer r(&window, 10);
+
+    Camera c(640, 480);
 
     Texture t;
     Texture t1;
     t.loadFromFile("Assets/Texture/minotaur.png");
     t1.loadFromFile("Assets/Texture/minotaur2.png");
 
-    EventHandler eh;
-    X x;
+    Sprite s;
+    s.tex = &t;
+
     using Callback = Delegate<void(IEventData)>;
-    eh.addCallback(IEventAction::MousePos, Callback::bind<&X::mouseMove>(&x));
-    eh.addCallback(IEventAction::BtnA,  Callback::bind<&X::btnA>(&x));
-    eh.addCallback(IEventAction::BtnB,  Callback::bind<&X::btnB>(&x));
+
+    auto eh = window.getEvtHandler();
+    eh->addCallback(IEventAction::Up,    Callback::bind<&Sprite::up>(&s));
+    eh->addCallback(IEventAction::Down,  Callback::bind<&Sprite::down>(&s));
+    eh->addCallback(IEventAction::Left,  Callback::bind<&Sprite::left>(&s));
+    eh->addCallback(IEventAction::Right, Callback::bind<&Sprite::right>(&s));
 
     while (window.isOpen()) {
-        IEvent e{};
-        // Move to Context Window ?
-        while (window.pollEvent(e)) {
-            eh.handleEvent(e);
-        }
+        s.update();
+        c.follow({ s.dst.x + s.dst.w / 2, s.dst.y + s.dst.h / 2 });
 
-        glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
-        r.begin();
-        for (size_t i = 0; i < 25; i++) {
-            r.draw({ f32(rand() % 550), f32(rand() % 430), 71, 65 }, { 0, 0, 71, 65 }, &t);
-            r.draw({ f32(rand() % 550), f32(rand() % 430), 71, 65 }, { 0, 0, 71, 65 }, &t1);
+        r.clear();
+        r.begin(&c);
+        r.draw(s.dst, s.src, &t);
+        for (size_t i = 0; i < 20; i++) {
+            r.draw({ f32(rand() % 600), f32(rand() % 480), 71, 65 }, { 0, 0, 71, 65 }, &t1);
         }
+        
         r.end();
 
         window.update();

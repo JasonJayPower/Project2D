@@ -1,5 +1,6 @@
 #include "Graphics/Renderer.hpp"
 
+#include "Graphics/Camera.hpp"
 #include "Graphics/Consts.hpp"
 #include "Graphics/ContextWindow.hpp"
 #include "Graphics/Texture.hpp"
@@ -8,7 +9,7 @@
 Renderer::Renderer(const ContextWindow* cWindow, s32 numSpritesPerBatch)
     : m_spriteCount { 0 }
     , m_batchSize   { numSpritesPerBatch }
-    , m_windowSize  { cWindow->getSize() }
+    , m_windowSize  { cWindow->getSize() }  //, m_testBuffer{ numSpritesPerBatch }
     , m_renderBuffer{ numSpritesPerBatch }
     , m_vertices    { Vertices(numSpritesPerBatch) }
     , m_textureSlots{ 0, 0, Textures(GLHelpers::getMaxTextureUnits()) }
@@ -25,8 +26,17 @@ void Renderer::resetView()
         Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
 }
 
-void Renderer::begin()
+void Renderer::clear() const
 {
+    glClearColor(0.39f, 0.58f, 0.93f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+}
+
+void Renderer::begin(Camera* camera)
+{
+    if (camera) {
+        m_shader.setUniformMatrix4fv(Graphics::ProjViewUniform, camera->getProjViewMat());
+    }
 }
 
 void Renderer::draw(RectF dst, RectF src, const Texture* texture)
@@ -74,12 +84,13 @@ void Renderer::flushBatch()
 void Renderer::drawBatch()
 {
     m_renderBuffer.update(m_vertices.data(), m_spriteCount);
-    glDrawElementsInstanced(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr, m_spriteCount);
+    glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, m_spriteCount);
 }
 
 void Renderer::createShader()
 {
     m_shader.create(Graphics::VSData, Graphics::FSData);
-    m_shader.setUniformMatrix4fv(Graphics::ProjViewUniform,
+    m_shader.setUniformMatrix4fv(
+        Graphics::ProjViewUniform,
         Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
 }

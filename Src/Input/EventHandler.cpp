@@ -1,5 +1,3 @@
-#include "EventHandler.hpp"
-
 #include "Input/EventHandler.hpp"
 
 void EventHandler::handleEvent(IEvent e)
@@ -13,16 +11,16 @@ void EventHandler::handleEvent(IEvent e)
                         callback(binding.first, binding.second.data);
                     }
                 } break;
-                case IEventType::MouseButtonPressed:
-                case IEventType::MouseButtonReleased: {
-                    if (e.data.mouse.btn == binding.second.data.mouse.btn) {
-                        callback(binding.first, binding.second.data);
-                    }
-                } break;
-                case IEventType::WindowResize:
-                case IEventType::MouseMoved: {
-                    callback(binding.first, e.data);
-                } break;
+                //case IEventType::MouseButtonPressed:
+                //case IEventType::MouseButtonReleased: {
+                //    if (e.data.mouse.btn == binding.second.data.mouse.btn) {
+                //        callback(binding.first, binding.second.data);
+                //    }
+                //} break;
+                //case IEventType::WindowResize:
+                //case IEventType::MouseMoved: {
+                //    callback(binding.first, e.data);
+                //} break;
                 default: break;
             }
         }

@@ -8,6 +8,7 @@
 #include "Math/Mat4x4.hpp"
 #include "Math/Vec2.hpp"
 
+class Camera;
 class ContextWindow;
 class Texture;
 class Renderer : NonCopyable
@@ -20,7 +21,8 @@ class Renderer : NonCopyable
 
     void resetView();
 
-    void begin();
+    void clear() const;
+    void begin(Camera* camera = nullptr);
     void draw(RectF dst, RectF src, const Texture* texture);
     void end();
 

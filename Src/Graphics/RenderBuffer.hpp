@@ -1,6 +1,7 @@
 #pragma once
 #include <GLAD/glad.h>
 
+#include "Graphics/Consts.hpp"
 #include "Graphics/Vertex.hpp"
 #include "Utils/Types.hpp"
 
@@ -10,16 +11,17 @@ class RenderBuffer
     RenderBuffer(s32 maxSprites);
     ~RenderBuffer();
 
-    void update(const Vertex* data, s32 count) const;
+    void update(const Vertex* data, s32 count);
 
   private:
     void createVertexBuffer();
-    void createIndexBuffer();
-    void createSpriteBuffer(u32 maxSprites);
+    void createSpriteBuffer();
     void createVertexArray();
 
-    u32 m_vao = 0;  // Vertex Array  Obj
-    u32 m_vbo = 0;  // Vertex Buffer Obj
-    u32 m_ibo = 0;  // Index  Buffer Obj
-    u32 m_sbo = 0;  // Sprite Buffer Obj
+    s32 m_maxSprites;
+    s32 m_bufferSize;
+    s32 m_currBuffer;
+    u32 m_vao[Graphics::MaxBuffers];
+    u32 m_vbo[Graphics::MaxBuffers];
+    u32 m_sbo[Graphics::MaxBuffers];
 };

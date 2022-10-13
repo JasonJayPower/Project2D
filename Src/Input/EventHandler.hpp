@@ -20,8 +20,9 @@ class EventHandler
   private:
     Callbacks m_callbacks;
     KeyBindings m_keyBindings{
-        { IEventAction::BtnA,     { IEventType::KeyPressed, { 68, 0 } } },
-        { IEventAction::MousePos, { IEventType::MouseMoved, {} } },
-        { IEventAction::BtnB,     { IEventType::MouseButtonPressed, { 0, 0 } } },
+        { IEventAction::Up,    { IEventType::KeyPressed, { 87, 0 } } },
+        { IEventAction::Down,  { IEventType::KeyPressed, { 83, 0 } } },
+        { IEventAction::Left,  { IEventType::KeyPressed, { 65, 0 } } },
+        { IEventAction::Right, { IEventType::KeyPressed, { 68, 0 } } },
     };
 };

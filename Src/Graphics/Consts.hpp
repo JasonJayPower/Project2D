@@ -3,6 +3,7 @@
 #include "Utils/Types.hpp"
 
 namespace Graphics {
+    inline constexpr s32 MaxBuffers = 1;
 
     inline constexpr const c8* ProjViewUniform = "projView";
     inline constexpr const c8* TextureUniform  = "tex";
@@ -21,8 +22,8 @@ namespace Graphics {
             fOffset = vOffset;
             fSrc = vSrc;
             fTid = vTid;
-            gl_Position = projView * vec4((vOffset * vDst.zw) + vDst.xy, 0.f, 1.f); 
-        }  
+            gl_Position = projView * vec4((vOffset * vDst.zw) + vDst.xy, 0.f, 1.f);
+        }
     )";
 
     inline constexpr const c8* FSData = R"(
@@ -32,7 +33,7 @@ namespace Graphics {
         flat in uint fTid;
         out vec4 Color;
         uniform sampler2D tex[5];
-        void main() { 
+        void main() {
             Color = texelFetch(tex[fTid], ivec2((fOffset * fSrc.zw) + fSrc.xy), 0);
         }
     )";
