@@ -89,7 +89,7 @@ void ContextWindow::initialiseKeyboardEvents()
 {
     glfwSetWindowUserPointer(m_window, &m_events);
 
-    glfwSetKeyCallback(m_window, [](GLFWwindow* window, s32 key, s32 scancode, s32 action, s32 mods) {
+    glfwSetKeyCallback(m_window, [](GLFWwindow* window, s32 key, s32 /*scancode*/, s32 action, s32 mods) {
         auto events = static_cast<IEventQueue*>(glfwGetWindowUserPointer(window));
         switch (action) {
             case GLFW_PRESS: {

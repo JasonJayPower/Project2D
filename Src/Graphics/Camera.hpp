@@ -25,6 +25,7 @@ class Camera
   private:
     void recalculateMatrix();
 
+    bool    m_reCalcMat;
     Vec2F   m_pos;
     Mat4x4F m_proj;
     Mat4x4F m_projView;

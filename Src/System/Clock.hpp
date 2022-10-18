@@ -18,13 +18,13 @@ class Clock
 
     Time elapsed() const noexcept
     {
-        return (ClockType::now() - m_start).count();
+        return Time::inNanoseconds((ClockType::now() - m_start).count());
     }
 
     Time restart() noexcept
     {
         const TimePoint now = ClockType::now();
-        Time elapsed        = (now - m_start).count();
+        Time elapsed        = Time::inNanoseconds((now - m_start).count());
         m_start             = now;
         return elapsed;
     }

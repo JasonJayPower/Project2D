@@ -1,9 +1,10 @@
 #include "Graphics/Camera.hpp"
 
 Camera::Camera(f32 width, f32 height)
-    : m_pos{ 0.f, 0.f }
-    , m_proj{ Math::createOrthoView(0.f, width, 0.f, height) }
-    , m_projView{ m_proj }
+    : m_reCalcMat{ true }
+    , m_pos      { 0.f, 0.f }
+    , m_proj     { Math::createOrthoView(width, height) }
+    , m_projView { m_proj }
 {
 }
 
@@ -19,9 +20,15 @@ RectF Camera::getViewBounds() const
 
 void Camera::follow(Vec2F target)
 {
-    const Vec2F viewSize = getViewSize();
-    m_pos.x              = -viewSize.x * 0.5f + target.x;
-    m_pos.y              = -viewSize.y * 0.5f + target.y;
+    const Vec2F currCamPos = m_pos;
+    const Vec2F viewSize   = getViewSize();
+
+    m_pos.x                = -viewSize.x * 0.5f + target.x;
+    m_pos.y                = -viewSize.y * 0.5f + target.y;
+
+    if (currCamPos != m_pos) {
+        m_reCalcMat = true;
+    }
 }
 
 void Camera::reset()
@@ -32,8 +39,11 @@ void Camera::reset()
 
 void Camera::move(const Vec2F pos)
 {
-    m_pos.x += pos.x;
-    m_pos.y += pos.y;
+    const Vec2F currCamPos = m_pos;
+    m_pos += pos;
+    if (currCamPos != m_pos) {
+        m_reCalcMat = true;
+    }
 }
 
 void Camera::recalculateMatrix()
@@ -43,6 +53,9 @@ void Camera::recalculateMatrix()
 
 const Mat4x4F& Camera::getProjViewMat()
 {
-    recalculateMatrix();
+    if (m_reCalcMat) {
+        recalculateMatrix();
+        m_reCalcMat = false;
+    }
     return m_projView;
 }

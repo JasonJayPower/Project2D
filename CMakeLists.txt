@@ -20,6 +20,9 @@ file(GLOB_RECURSE SRC_FILES CONFIGURE_DEPENDS "src/*.cpp")
 # Add an executable to the project using the specified source files.
 add_executable(${PROJECT_NAME} ${SRC_FILES})
 
+# Add compiler options (WARNINGS) to a target.
+target_compile_options(${PROJECT_NAME} PRIVATE /W4 )#/WX)
+
 # Add expected compiler features to a target.
 target_compile_features(${PROJECT_NAME} PRIVATE cxx_std_17)
 

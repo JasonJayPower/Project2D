@@ -39,11 +39,11 @@ class Renderer : NonCopyable
 
     void createShader();
 
-    s32 m_spriteCount;
-    s32 m_batchSize;
-    Vec2S m_windowSize;
+    s32          m_spriteCount;
+    s32          m_batchSize;
+    Vec2S        m_winSize;
     RenderBuffer m_renderBuffer;
     TextureSlots m_textureSlots;
-    Vertices m_vertices;
-    Shader m_shader;
+    Vertices     m_vertices;
+    Shader       m_shader;
 };

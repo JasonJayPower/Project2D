@@ -9,7 +9,7 @@
 Renderer::Renderer(const ContextWindow* cWindow, s32 numSpritesPerBatch)
     : m_spriteCount { 0 }
     , m_batchSize   { numSpritesPerBatch }
-    , m_windowSize  { cWindow->getSize() }  //, m_testBuffer{ numSpritesPerBatch }
+    , m_winSize     { cWindow->getSize() }
     , m_renderBuffer{ numSpritesPerBatch }
     , m_vertices    { Vertices(numSpritesPerBatch) }
     , m_textureSlots{ 0, 0, Textures(GLHelpers::getMaxTextureUnits()) }
@@ -23,7 +23,7 @@ void Renderer::resetView()
 {
     m_shader.setUniformMatrix4fv(
         Graphics::ProjViewUniform,
-        Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
+        Math::createOrthoView(static_cast<f32>(m_winSize.x), static_cast<f32>(m_winSize.y)));
 }
 
 void Renderer::clear() const
@@ -34,13 +34,15 @@ void Renderer::clear() const
 
 void Renderer::begin(Camera* camera)
 {
-    if (camera) {
+    if (camera /*&& needs requires Update*/) {
         m_shader.setUniformMatrix4fv(Graphics::ProjViewUniform, camera->getProjViewMat());
     }
 }
 
 void Renderer::draw(RectF dst, RectF src, const Texture* texture)
 {
+    // Get view bounds and test against dst to remove 
+
     const u32 texSlot = getTextureSlot(texture);
     if (m_spriteCount >= m_batchSize) {
         flushBatch();
@@ -60,7 +62,7 @@ s32 Renderer::getTextureSlot(const Texture* tex)
     s32 texSlot = m_textureSlots.prevSlot;
     if (tex != m_textureSlots.slot[texSlot]) {
         const auto it = std::find(std::begin(m_textureSlots.slot), std::end(m_textureSlots.slot), tex);
-        texSlot       = it != m_textureSlots.slot.end() ? it - m_textureSlots.slot.cbegin() : -1;
+        texSlot       = it != m_textureSlots.slot.end() ? static_cast<s32>(it - m_textureSlots.slot.cbegin()) : -1;
         if (texSlot == -1) {
             if (m_textureSlots.currSlot >= m_textureSlots.slot.size()) {
                 m_textureSlots.currSlot = m_textureSlots.prevSlot = 0;
@@ -92,5 +94,5 @@ void Renderer::createShader()
     m_shader.create(Graphics::VSData, Graphics::FSData);
     m_shader.setUniformMatrix4fv(
         Graphics::ProjViewUniform,
-        Math::createOrthoView(0.f, static_cast<f32>(m_windowSize.x), 0.f, static_cast<f32>(m_windowSize.y)));
+        Math::createOrthoView(static_cast<f32>(m_winSize.x), static_cast<f32>(m_winSize.y)));
 }

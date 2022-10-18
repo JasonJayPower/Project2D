@@ -20,7 +20,7 @@ inline constexpr Mat4x4F operator*(const Mat4x4F& lhs, const Mat4x4F& rhs)
 }
 
 namespace Math {
-    inline constexpr Mat4x4F createOrthoView(f32 l, f32 r, f32 t, f32 b, f32 n = 1.f, f32 f = -1.f)
+    inline constexpr Mat4x4F createOrthoView(f32 r, f32 b, f32 t = 0.f, f32 l = 0.f, f32 n = 1.f, f32 f = -1.f)
     {
         return Mat4x4F{ 2.f / (r - l), 0.f,           0.f,          -((r + l) / (r - l)),
                         0.f,           2.f / (t - b), 0.f,          -((t + b) / (t - b)),

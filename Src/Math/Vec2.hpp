@@ -22,6 +22,26 @@ struct Vec2 {
     T y = 0;
 };
 
+template <typename T>
+constexpr Vec2<T>& operator+=(Vec2<T>& v1, const Vec2<T>& v2) noexcept
+{
+    v1.x += v2.x;
+    v1.y += v2.y;
+    return v1;
+}
+
+template <typename T>
+inline constexpr bool operator==(Vec2<T> v1, Vec2<T> v2) noexcept
+{
+    return v1.x == v2.x && v1.y == v2.y;
+}
+
+template <typename T>
+inline constexpr bool operator!=(Vec2<T> v1, Vec2<T> v2) noexcept
+{
+    return !(v1 == v2);
+}
+
 using Vec2S = Vec2<s32>;
 using Vec2U = Vec2<u32>;
 using Vec2F = Vec2<f32>;
